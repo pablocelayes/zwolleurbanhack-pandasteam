@@ -7,7 +7,8 @@ import pickle
 
 from clean_data import *
 
-def load_dataset(test_size=0.3, mins_diff=5):
+
+def load_dataset(mins_diff=5):
     df = pd.read_csv('../data/CleanData/traveltimes_all_2014_15_16.csv')
 
     df.tijd = pd.to_datetime(df.tijd)
@@ -19,7 +20,9 @@ def load_dataset(test_size=0.3, mins_diff=5):
     df = df.iloc[:-mins_diff,:]
 
     del df['tijd']
+    return df
 
+def train_test_split(df, test_size=0.3):
     cut = int(len(y) * test_size)
 
     X_train = df.iloc[:-cut,:]
@@ -57,5 +60,6 @@ def train_eval_classifier(X_train, X_test, y_train, y_test):
     return clf
 
 if __name__ == '__main__':
-    X_train, X_test, y_train, y_test = load_dataset()
+    df, y = load_dataset(mins_diff=5)
+    X_train, X_test, y_train, y_test =  train_test_split(df, test_size=0.3)
     clf = train_eval_classifier(X_train, X_test, y_train, y_test)
